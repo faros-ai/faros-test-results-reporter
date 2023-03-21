@@ -1,7 +1,7 @@
 {
   "name": "faros-test-results-reporter",
   "version": "0.1.0",
-  "description": "CLI for parsing & uploading test results (JUnit, TestNG, xUnit, cucumber etc.) to Faros AI API",
+  "description": "CLI for parsing & uploading test results (JUnit, TestNG, xUnit, CSucumber etc.) to Faros AI API",
   "keywords": [
     "airbyte",
     "source",
@@ -47,6 +47,7 @@
     "pino": "^8.11.0",
     "pino-pretty": "^10.0.0",
     "test-results-parser": "^0.1.4",
+    "uuid": "^9.0.0",
     "verror": "^1.10.1"
   },
   "devDependencies": {
