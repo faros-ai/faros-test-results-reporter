@@ -77,7 +77,6 @@ export class TestResultsReporter {
                 : s.failure ?? s.stack_trace,
           });
         }
-
         cases.push({
           id: uuidv4(),
           name: tc.name,
