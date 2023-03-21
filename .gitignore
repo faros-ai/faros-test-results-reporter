@@ -1,0 +1,5 @@
+lib/
+node_modules/
+*.code-workspace
+out/
+/.idea
