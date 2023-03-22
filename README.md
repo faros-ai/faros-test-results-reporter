@@ -6,6 +6,7 @@ CLI for parsing &amp; uploading test results (JUnit, TestNG, xUnit, cucumber etc
 
 ```
 $ npm i
+
 $ ./bin/main /path/to/reports.* --format junit \
   --test-start "2021-07-20T18:05:46.019Z" \
   --test-end "2021-07-20T18:08:22.113Z" \
