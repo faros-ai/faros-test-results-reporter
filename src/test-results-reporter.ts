@@ -113,8 +113,10 @@ export class TestResultsReporter {
               custom: 0,
               total: ts.total,
             },
-            startTime: this.config.testStart,
-            endTime: this.config.testEnd,
+            startTime: ts.timestamp ?? this.config.testStart,
+            endTime: ts.timestamp
+              ? new Date(Date.parse(ts.timestamp) + ts.duration).toISOString()
+              : this.config.testEnd,
             ...(cases.length > 0 ? { case: cases } : {}),
           },
         },
