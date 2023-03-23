@@ -113,6 +113,12 @@ export function mainCommand(): Command {
   ).default(false);
   cmd.addOption(validateOnly);
 
+  const concurrency = new Option(
+    '--concurrency <number>',
+    'Number of concurrent requests to Faros API'
+  ).default(8);
+  cmd.addOption(concurrency);
+
   cmd.action(async (paths, options) => {
     const config: TestResultsReporterConfig = { ...options };
     const log = pino({

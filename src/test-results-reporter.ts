@@ -3,6 +3,7 @@ import { Logger } from 'pino';
 import axios, { AxiosInstance } from 'axios';
 import { VError } from 'verror';
 import { v4 as uuidv4 } from 'uuid';
+import pLimit from 'p-limit';
 
 export type TestResultsReporterConfig = {
   readonly path: string;
@@ -20,6 +21,7 @@ export type TestResultsReporterConfig = {
   readonly debug?: boolean;
   readonly dryRun?: boolean;
   readonly validateOnly?: boolean;
+  readonly concurrency: number;
 };
 
 export enum TestResultsFormat {
@@ -61,6 +63,9 @@ export class TestResultsReporter {
 
     const results = parse({ type: this.config.format, files });
     this.log.info('Parsed %d test results', results.total);
+
+    const workerPromises = [];
+    const limit = pLimit(Number(this.config.concurrency));
 
     for (const ts of results.suites) {
       const cases = [];
@@ -113,35 +118,56 @@ export class TestResultsReporter {
               custom: 0,
               total: ts.total,
             },
-            startTime: this.config.testStart,
-            endTime: this.config.testEnd,
+            startTime: ts.timestamp ?? this.config.testStart,
+            endTime: ts.timestamp
+              ? new Date(Date.parse(ts.timestamp) + ts.duration).toISOString()
+              : this.config.testEnd,
             ...(cases.length > 0 ? { case: cases } : {}),
           },
         },
       };
-      this.log.debug('Reporting event: %s', JSON.stringify(data));
 
       if (this.config.dryRun !== true) {
-        try {
-          await this.client.post(`/graphs/${this.config.graph}/events`, data, {
-            params: {
-              full: true,
-              validateOnly: this.config.validateOnly,
-            },
-            headers: {
-              'x-faros-graph-version': this.config.graphVersion,
-            },
-          });
-        } catch (err: any) {
-          const url = `${err.config?.baseURL}${err.config?.url}` ?? 'Faros API';
-          const response = err.response?.data
-            ? ` Response: ${JSON.stringify(err.response.data)}`
-            : '';
-          const msg = `Failed to post event to ${url}. Error: ${err.message}.${response}`;
-          throw new VError(msg);
-        }
+        workerPromises.push(
+          limit(async () => {
+            const id = data.data.test.id;
+            try {
+              this.log.debug(
+                'Reporting event %s: %s',
+                id,
+                JSON.stringify(data)
+              );
+              await this.client.post(
+                `/graphs/${this.config.graph}/events`,
+                data,
+                {
+                  params: {
+                    full: true,
+                    validateOnly: this.config.validateOnly,
+                  },
+                  headers: {
+                    'x-faros-graph-version': this.config.graphVersion,
+                  },
+                }
+              );
+              this.log.debug('Delivered event %s', id);
+            } catch (err: any) {
+              const url =
+                `${err.config?.baseURL}${err.config?.url}` ?? 'Faros API';
+              const response = err.response?.data
+                ? ` Response: ${JSON.stringify(err.response.data)}`
+                : '';
+              const msg = `Failed to post event ${id} to ${url}. Error: ${err.message}.${response}`;
+              throw new VError(msg);
+            }
+          })
+        );
       }
     }
+
+    // Wait for all the requests to complete
+    await Promise.all(workerPromises);
+
     this.log.info('Processed %d test suites', results.suites.length);
     this.log.info('Done.');
   }
