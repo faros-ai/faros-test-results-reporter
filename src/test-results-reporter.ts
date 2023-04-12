@@ -118,7 +118,7 @@ export class TestResultsReporter {
               custom: 0,
               total: ts.total,
             },
-            startTime: ts.timestamp ?? this.config.testStart,
+            startTime: ts.timestamp || this.config.testStart,
             endTime: ts.timestamp
               ? new Date(Date.parse(ts.timestamp) + ts.duration).toISOString()
               : this.config.testEnd,
