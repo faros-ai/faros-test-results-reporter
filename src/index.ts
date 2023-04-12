@@ -10,7 +10,7 @@ import {
 import pino from 'pino';
 
 export const DEFAULT_GRAPH_NAME = 'default';
-export const DEFAULT_GRAPH_VERSION = 'v2';
+export const DEFAULT_GRAPH_VERSION = 'v1';
 export const DEFAULT_ORIGIN = 'faros-test-results-reporter';
 export const DEFAULT_API_URL = 'https://prod.api.faros.ai';
 
