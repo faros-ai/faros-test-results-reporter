@@ -137,6 +137,10 @@ export class TestResultsReporter {
                 id,
                 JSON.stringify(data)
               );
+              const headers = this.config.graphVersion
+                ? {'x-faros-graph-version': this.config.graphVersion}
+                : undefined;
+
               await this.client.post(
                 `/graphs/${this.config.graph}/events`,
                 data,
@@ -145,9 +149,7 @@ export class TestResultsReporter {
                     full: true,
                     validateOnly: this.config.validateOnly,
                   },
-                  headers: {
-                    'x-faros-graph-version': this.config.graphVersion,
-                  },
+                  headers,
                 }
               );
               this.log.debug('Delivered event %s', id);
