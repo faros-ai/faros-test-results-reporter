@@ -10,9 +10,13 @@ import {
 import pino from 'pino';
 
 export const DEFAULT_GRAPH_NAME = 'default';
-export const DEFAULT_GRAPH_VERSION = 'v2';
 export const DEFAULT_ORIGIN = 'faros-test-results-reporter';
 export const DEFAULT_API_URL = 'https://prod.api.faros.ai';
+
+enum GraphVersion {
+  V1 = 'v1',
+  V2 = 'v2',
+}
 
 /** The main entry point. */
 export function mainCommand(): Command {
@@ -57,7 +61,7 @@ export function mainCommand(): Command {
   const graphVersion = new Option(
     '--graph-version <version>',
     'The graph version that the test results should be sent to'
-  ).default(DEFAULT_GRAPH_VERSION);
+  ).choices(Object.values(GraphVersion))
   cmd.addOption(graphVersion);
 
   const origin = new Option(
