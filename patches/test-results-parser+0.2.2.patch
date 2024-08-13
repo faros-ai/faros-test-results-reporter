@@ -1,19 +1,18 @@
 diff --git a/node_modules/test-results-parser/src/helpers/helper.js b/node_modules/test-results-parser/src/helpers/helper.js
-index de7830d..da37665 100644
+index 2cc805f..950c62e 100644
 --- a/node_modules/test-results-parser/src/helpers/helper.js
 +++ b/node_modules/test-results-parser/src/helpers/helper.js
-@@ -5,8 +5,7 @@ const { totalist } = require('totalist/sync');
- const globrex = require('globrex');
+@@ -71,7 +71,7 @@ function resolveFilePath(filePath) {
+ }
  
  function getJsonFromXMLFile(filePath) {
--  const cwd = process.cwd();
--  const xml = fs.readFileSync(path.join(cwd, filePath)).toString();
+-  const xml = fs.readFileSync(resolveFilePath(filePath)).toString();
 +  const xml = fs.readFileSync(filePath).toString();
-   return parser.parse(xml, { arrayMode: true, ignoreAttributes: false, parseAttributeValue: true });
+   return configured_parser.parse(xml);
  }
  
 diff --git a/node_modules/test-results-parser/src/models/TestSuite.d.ts b/node_modules/test-results-parser/src/models/TestSuite.d.ts
-index 98977f0..223bbeb 100644
+index 2a7628a..6bd9389 100644
 --- a/node_modules/test-results-parser/src/models/TestSuite.d.ts
 +++ b/node_modules/test-results-parser/src/models/TestSuite.d.ts
 @@ -8,6 +8,7 @@ declare class TestSuite {
@@ -22,10 +21,10 @@ index 98977f0..223bbeb 100644
    duration: number;
 +  timestamp: string;
    status: string;
-   cases: TestCase[];
- }
+   tags: string[];
+   metadata: object;
 diff --git a/node_modules/test-results-parser/src/models/TestSuite.js b/node_modules/test-results-parser/src/models/TestSuite.js
-index d4c6a0d..7bb27cd 100644
+index 776c56f..182be8e 100644
 --- a/node_modules/test-results-parser/src/models/TestSuite.js
 +++ b/node_modules/test-results-parser/src/models/TestSuite.js
 @@ -9,6 +9,7 @@ class TestSuite {
@@ -34,17 +33,17 @@ index d4c6a0d..7bb27cd 100644
      this.duration = 0;
 +    this.timestamp = '';
      this.status = 'NA';
-     this.cases = [];
-   }
+     this.tags = [];
+     this.metadata = {};
 diff --git a/node_modules/test-results-parser/src/parsers/junit.js b/node_modules/test-results-parser/src/parsers/junit.js
-index fb012c3..5c9f0ce 100644
+index 073d7a6..48f54a8 100644
 --- a/node_modules/test-results-parser/src/parsers/junit.js
 +++ b/node_modules/test-results-parser/src/parsers/junit.js
-@@ -33,6 +33,7 @@ function getTestSuite(rawSuite) {
+@@ -62,6 +62,7 @@ function getTestSuite(rawSuite) {
    suite.total = suite.total - suite.skipped;
    suite.passed = suite.total - suite.failed - suite.errors;
    suite.duration = rawSuite["@_time"] * 1000;
 +  suite.timestamp = rawSuite["@_timestamp"];
    suite.status = suite.total === suite.passed ? 'PASS' : 'FAIL';
+   setMetaData(rawSuite, suite);
    const raw_test_cases = rawSuite.testcase;
-   if (raw_test_cases) {
