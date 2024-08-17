@@ -1,8 +1,8 @@
-diff --git a/node_modules/test-results-parser/src/models/TestSuite.d.ts b/node_modules/test-results-parser/src/models/TestSuite.d.ts
-index 2a7628a..6bd9389 100644
---- a/node_modules/test-results-parser/src/models/TestSuite.d.ts
-+++ b/node_modules/test-results-parser/src/models/TestSuite.d.ts
-@@ -8,6 +8,7 @@ declare class TestSuite {
+diff --git a/node_modules/test-results-parser/src/index.d.ts b/node_modules/test-results-parser/src/index.d.ts
+index f128d44..89c8ab5 100644
+--- a/node_modules/test-results-parser/src/index.d.ts
++++ b/node_modules/test-results-parser/src/index.d.ts
+@@ -22,6 +22,7 @@ export interface ITestSuite {
    errors: number;
    skipped: number;
    duration: number;
@@ -23,14 +23,14 @@ index 776c56f..182be8e 100644
      this.tags = [];
      this.metadata = {};
 diff --git a/node_modules/test-results-parser/src/parsers/junit.js b/node_modules/test-results-parser/src/parsers/junit.js
-index 073d7a6..48f54a8 100644
+index 073d7a6..17affdb 100644
 --- a/node_modules/test-results-parser/src/parsers/junit.js
 +++ b/node_modules/test-results-parser/src/parsers/junit.js
-@@ -62,6 +62,7 @@ function getTestSuite(rawSuite) {
-   suite.total = suite.total - suite.skipped;
-   suite.passed = suite.total - suite.failed - suite.errors;
-   suite.duration = rawSuite["@_time"] * 1000;
+@@ -176,6 +176,7 @@ function getTestResult(json, options) {
+   result.total = result.total - result.skipped;
+   result.passed = result.total - result.failed - result.errors;
+   result.duration = rawResult["@_time"] * 1000;
 +  suite.timestamp = rawSuite["@_timestamp"];
-   suite.status = suite.total === suite.passed ? 'PASS' : 'FAIL';
-   setMetaData(rawSuite, suite);
-   const raw_test_cases = rawSuite.testcase;
+   // top-level element is testsuites
+   if (json["testsuites"]) {
+     const rawSuites = rawResult["testsuite"];
