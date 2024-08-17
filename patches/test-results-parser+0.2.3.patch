@@ -10,6 +10,18 @@ index f128d44..89c8ab5 100644
    status: string;
    tags: string[];
    metadata: object;
+diff --git a/node_modules/test-results-parser/src/models/TestSuite.d.ts b/node_modules/test-results-parser/src/models/TestSuite.d.ts
+index 2a7628a..6bd9389 100644
+--- a/node_modules/test-results-parser/src/models/TestSuite.d.ts
++++ b/node_modules/test-results-parser/src/models/TestSuite.d.ts
+@@ -8,6 +8,7 @@ declare class TestSuite {
+   errors: number;
+   skipped: number;
+   duration: number;
++  timestamp: string;
+   status: string;
+   tags: string[];
+   metadata: object;
 diff --git a/node_modules/test-results-parser/src/models/TestSuite.js b/node_modules/test-results-parser/src/models/TestSuite.js
 index 776c56f..182be8e 100644
 --- a/node_modules/test-results-parser/src/models/TestSuite.js
