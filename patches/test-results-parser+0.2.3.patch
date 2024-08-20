@@ -1,3 +1,15 @@
+diff --git a/node_modules/test-results-parser/src/index.d.ts b/node_modules/test-results-parser/src/index.d.ts
+index f128d44..89c8ab5 100644
+--- a/node_modules/test-results-parser/src/index.d.ts
++++ b/node_modules/test-results-parser/src/index.d.ts
+@@ -22,6 +22,7 @@ export interface ITestSuite {
+   errors: number;
+   skipped: number;
+   duration: number;
++  timestamp: string;
+   status: string;
+   tags: string[];
+   metadata: object;
 diff --git a/node_modules/test-results-parser/src/models/TestSuite.d.ts b/node_modules/test-results-parser/src/models/TestSuite.d.ts
 index 2a7628a..6bd9389 100644
 --- a/node_modules/test-results-parser/src/models/TestSuite.d.ts

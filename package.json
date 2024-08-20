@@ -47,7 +47,7 @@
     "patch-package": "^6.5.1",
     "pino": "^8.11.0",
     "pino-pretty": "^10.0.0",
-    "test-results-parser": "^0.2.2",
+    "test-results-parser": "^0.2.3",
     "uuid": "^9.0.0",
     "verror": "^1.10.1"
   },
