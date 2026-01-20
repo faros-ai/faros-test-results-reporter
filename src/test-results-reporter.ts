@@ -155,7 +155,9 @@ export class TestResultsReporter {
               this.log.debug('Delivered event %s', id);
             } catch (err: any) {
               const url =
-                `${err.config?.baseURL}${err.config?.url}` ?? 'Faros API';
+                err.config?.baseURL && err.config?.url
+                  ? `${err.config.baseURL}${err.config.url}`
+                  : 'Faros API';
               const response = err.response?.data
                 ? ` Response: ${JSON.stringify(err.response.data)}`
                 : '';
